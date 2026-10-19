@@ -92,3 +92,20 @@ resource "azurerm_public_ip" "mtc-public-ip" {                 // Creates a publ
   }
 }
 
+
+resource "azurerm_network_interface" "mtc-nic" {               // Creates a network interface in Azure
+  name                = "mtc-nic"                              // Name of the network interface
+  location            = azurerm_resource_group.mtc-rg.location // Uses the resource group's location
+  resource_group_name = azurerm_resource_group.mtc-rg.name     // Resource group where the NIC will be created
+
+  ip_configuration {                                                   // Configures IP settings for the network interface
+    name                          = "internal"                         // Name of the IP configuration
+    subnet_id                     = azurerm_subnet.mtc-subner.id       // Connects the NIC to your subnet
+    private_ip_address_allocation = "Dynamic"                          // Automatically assigns a private IP address
+    public_ip_address_id          = azurerm_public_ip.mtc-public-ip.id // Associates the public IP with the NIC
+  }
+
+  tags = {                         // Adds metadata tags to the network interface
+    environment = "Terraform Demo" // Identifies the environment as a Terraform demo
+  }
+}
