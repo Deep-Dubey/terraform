@@ -1,0 +1,42 @@
+Add multiple provider
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.0"
+    }
+
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
+provider "aws" {
+  region = "ap-south-1"
+}
+
+---------------------------------------------------
+init - is not sufficient to check the code if we put anything inside 
+provider "azurerm" {
+  features {}
+}
+
+it will succesfullt configure it.
+--------------------------------------------------------
+
+terraform fmt - It is used for clean the formate
+terraform init - Initialized it.
+terraform plan - is used to preview what Terraform will create, modify, or delete in your infrastructure 
+                 before making any actual changes.
+terraform apply -auto-approve - is used to create, update, or delete infrastructure without asking you to confirm by typing yes.
+terraform state list -  is used to list all the resources.
+terraform state show resource_group_name - It will give the full details of that particular resource.
+(terraform state show azurerm_resource_group.mtc-rg)
+terraform plan -destroy - It will tell what i will destroy.
+terraform apply -destroy - It will destroy the resource you created.
