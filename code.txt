@@ -41,3 +41,6 @@ terraform state show resource_group_name - It will give the full details of that
 terraform plan -destroy - It will tell what i will destroy.
 terraform apply -destroy - It will destroy the resource you created.
 ssh-keygen -t rsa - is used to generate an SSH key pair that lets you securely connect to a remote machine
+ssh -i ~/.ssh/azurerm-ssh-key azureuser@20.207.207.234 - We use this command to connect to your Azure Linux Virtual Machine remotely using SSH from your computer.
+lsb_release -a - Inside the VM to see what is the version OS we are using.
+In Terraform, we use a .tpl file (template file) to keep scripts or configuration outside the main Terraform code and reuse them when creating infrastructure.
