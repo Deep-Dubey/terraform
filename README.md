@@ -64,3 +64,7 @@ Provisioners run commands on a local or remote machine after a resource is creat
 ## Data Sources and Resources
 
 Use a Terraform `data` block to read information about an existing Azure resource. Use a `resource` block when Terraform should create or manage the resource's lifecycle.
+
+## Dummy Files
+
+`dummy_main.tf` is a placeholder configuration. Set `admin_source_cidr` to a trusted source CIDR before using it. The `dummy_terraform.tfstate.example` and `dummy_terraform.tfstate.backup.example` files are empty examples, not project state; Terraform will not load them as state files.

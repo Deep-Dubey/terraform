@@ -1,4 +1,3 @@
-
 terraform {
   required_providers {
     azurerm = {
@@ -14,8 +13,8 @@ provider "azurerm" {
 
 // Creates the Azure resource group
 resource "azurerm_resource_group" "mtc-rg" {
-  name     = "mtc-resources"
-  location = "Central India"
+  name     = "XXXX"
+  location = "XXXX"
 
   tags = {
     environment = "Terraform Demo"
@@ -24,7 +23,7 @@ resource "azurerm_resource_group" "mtc-rg" {
 
 // Creates the virtual network
 resource "azurerm_virtual_network" "mtc-vnet" {
-  name                = "mtc-vnet"
+  name                = "XXXX"
   location            = azurerm_resource_group.mtc-rg.location
   resource_group_name = azurerm_resource_group.mtc-rg.name
   address_space       = ["10.0.0.0/16"]
@@ -36,7 +35,7 @@ resource "azurerm_virtual_network" "mtc-vnet" {
 
 // Creates the subnet
 resource "azurerm_subnet" "mtc-subner" {
-  name                 = "mtc-subnet"
+  name                 = "XXXX"
   virtual_network_name = azurerm_virtual_network.mtc-vnet.name
   resource_group_name  = azurerm_resource_group.mtc-rg.name
   address_prefixes     = ["10.0.1.0/24"]
@@ -44,7 +43,7 @@ resource "azurerm_subnet" "mtc-subner" {
 
 // Creates the Network Security Group
 resource "azurerm_network_security_group" "mtc-nsg" {
-  name                = "mtc-nsg"
+  name                = "XXXX"
   location            = azurerm_resource_group.mtc-rg.location
   resource_group_name = azurerm_resource_group.mtc-rg.name
 
@@ -62,7 +61,7 @@ resource "azurerm_network_security_rule" "allow-ssh" {
   protocol                   = "*"
   source_port_range          = "*"
   destination_port_range     = "22"
-  source_address_prefix      = "*"
+  source_address_prefix      = var.admin_source_cidr
   destination_address_prefix = "*"
 
   resource_group_name         = azurerm_resource_group.mtc-rg.name
@@ -77,7 +76,7 @@ resource "azurerm_subnet_network_security_group_association" "mtc-nsg-associatio
 
 // Creates a static public IP
 resource "azurerm_public_ip" "mtc-public-ip" {
-  name                = "mtc-public-ip"
+  name                = "XXXX"
   location            = azurerm_resource_group.mtc-rg.location
   resource_group_name = azurerm_resource_group.mtc-rg.name
 
@@ -91,7 +90,7 @@ resource "azurerm_public_ip" "mtc-public-ip" {
 
 // Creates the network interface
 resource "azurerm_network_interface" "mtc-nic" {
-  name                = "mtc-nic"
+  name                = "XXXX"
   location            = azurerm_resource_group.mtc-rg.location
   resource_group_name = azurerm_resource_group.mtc-rg.name
 
@@ -109,15 +108,15 @@ resource "azurerm_network_interface" "mtc-nic" {
 
 // Creates the Ubuntu Linux VM
 resource "azurerm_linux_virtual_machine" "mtc-vm" {
-  name                = "mtc-vm"
-  computer_name       = "mtc-vm"
+  name                = "XXXX"
+  computer_name       = "XXXX"
   resource_group_name = azurerm_resource_group.mtc-rg.name
   location            = azurerm_resource_group.mtc-rg.location
 
   size = "Standard_B2s_v2"
   zone = "2"
 
-  admin_username = "azureuser"
+  admin_username = "XXXX"
 
   network_interface_ids = [
     azurerm_network_interface.mtc-nic.id
@@ -128,7 +127,7 @@ resource "azurerm_linux_virtual_machine" "mtc-vm" {
 
   // Configures SSH key authentication
   admin_ssh_key {
-    username   = "azureuser"
+    username   = "XXXX"
     public_key = file(pathexpand("~/.ssh/azurerm-ssh-key.pub"))
   }
 
@@ -153,13 +152,22 @@ resource "azurerm_linux_virtual_machine" "mtc-vm" {
 
   // Configures SSH on the Windows machine running Terraform
   provisioner "local-exec" {
-    interpreter = ["PowerShell", "-Command"]
+    interpreter = var.host_os == "windows" ? ["PowerShell", "-Command"] : ["bash", "-c"]
 
-    command = templatefile("${path.module}/windows-ssh-script.tpl", {
-      hostname     = "mtc-vm"
+    command = templatefile("${var.host_os}/windows-ssh-script.tpl", {
+      hostname     = "XXXX"
       host_address = self.public_ip_address
-      user         = self.admin_username
+      user         = "XXXX"
       identityfile = pathexpand("~/.ssh/azurerm-ssh-key")
     })
   }
+}
+
+data "azurerm_public_ip" "existing-ip" {
+  name                = azurerm_public_ip.mtc-public-ip.name
+  resource_group_name = azurerm_resource_group.mtc-rg.name
+}
+
+output "public_ip_address" {
+  value = "${azurerm_linux_virtual_machine.mtc-vm.name}: ${data.azurerm_public_ip.existing-ip.ip_address}"
 }

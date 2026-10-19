@@ -7,6 +7,8 @@ main.tf
 # Terraform state files
 *.tfstate
 *.tfstate.*
+!dummy_terraform.tfstate.example
+!dummy_terraform.tfstate.backup.example
 
 # Crash logs
 crash.log
