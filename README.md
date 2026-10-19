@@ -69,4 +69,4 @@ Use a Terraform `data` block to read information about an existing Azure resourc
 
 ## Dummy Files
 
-`dummy_main.tf` is a placeholder configuration. Set `admin_source_cidr` to a trusted source CIDR before using it. The `dummy_terraform.tfstate.example` and `dummy_terraform.tfstate.backup.example` files are empty examples, not project state; Terraform will not load them as state files.
+`dummy_main.tf.example` is a placeholder configuration and is not loaded by Terraform. To use it, copy it to `main.tf` and set `admin_source_cidr` to a trusted source CIDR. The `dummy_terraform.tfstate.example` and `dummy_terraform.tfstate.backup.example` files are empty examples, not project state; Terraform will not load them as state files.
