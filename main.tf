@@ -63,7 +63,7 @@ resource "azurerm_network_security_rule" "allow-ssh" { // Creates a security rul
   protocol                   = "*"                     // Allows TCP/ICP traffic
   source_port_range          = "*"                     // Allows traffic from any source port
   destination_port_range     = "22"                    // SSH destination port
-  source_address_prefix      = "205.254.168.133/32"    // Replace with your actual public IP address
+  source_address_prefix      = "*"                     // Replace with your actual public IP address
   destination_address_prefix = "*"                     // Applies to any destination IP address
 
   resource_group_name         = azurerm_resource_group.mtc-rg.name          // Resource group containing the NSG
@@ -75,3 +75,20 @@ resource "azurerm_subnet_network_security_group_association" "mtc-nsg-associatio
   subnet_id                 = azurerm_subnet.mtc-subner.id                           // ID of the subnet to protect
   network_security_group_id = azurerm_network_security_group.mtc-nsg.id              // ID of the NSG to associate
 }
+
+
+
+
+resource "azurerm_public_ip" "mtc-public-ip" {                 // Creates a public IP address in Azure
+  name                = "mtc-public-ip"                        // Name of the public IP resource
+  location            = azurerm_resource_group.mtc-rg.location // Uses the resource group's location
+  resource_group_name = azurerm_resource_group.mtc-rg.name     // Resource group where the public IP is created
+
+  allocation_method = "Static"   // Assigns a stable public IP address
+  sku               = "Standard" // Uses the Standard public IP SKU
+
+  tags = {
+    environment = "Terraform Demo" // Identifies the environment
+  }
+}
+
