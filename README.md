@@ -1,5 +1,7 @@
 # Terraform Project Notes
 
+![Terraform Azure VM provisioning infographic](Terraform%20Azure%20VM%20Provisioning%20Infographic.png)
+
 ## Multiple Providers
 
 This configuration declares AzureRM and AWS providers:
