@@ -53,7 +53,7 @@ resource "azurerm_network_security_group" "mtc-nsg" {
   }
 }
 
-// Allows SSH only from your public IP
+// Allows SSH from your current public IP only
 resource "azurerm_network_security_rule" "allow-ssh" {
   name                       = "Allow-SSH"
   priority                   = 100
@@ -149,5 +149,17 @@ resource "azurerm_linux_virtual_machine" "mtc-vm" {
 
   tags = {
     environment = "Terraform Demo"
+  }
+
+  // Configures SSH on the Windows machine running Terraform
+  provisioner "local-exec" {
+    interpreter = ["PowerShell", "-Command"]
+
+    command = templatefile("${path.module}/windows-ssh-script.tpl", {
+      hostname     = "mtc-vm"
+      host_address = self.public_ip_address
+      user         = self.admin_username
+      identityfile = pathexpand("~/.ssh/azurerm-ssh-key")
+    })
   }
 }
