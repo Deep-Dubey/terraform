@@ -1,6 +1,9 @@
 # Terraform downloaded providers and working files
 .terraform/
 
+# Local Terraform configuration
+main.tf
+
 # Terraform state files
 *.tfstate
 *.tfstate.*
