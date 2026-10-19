@@ -40,3 +40,4 @@ terraform state show resource_group_name - It will give the full details of that
 (terraform state show azurerm_resource_group.mtc-rg)
 terraform plan -destroy - It will tell what i will destroy.
 terraform apply -destroy - It will destroy the resource you created.
+ssh-keygen -t rsa - is used to generate an SSH key pair that lets you securely connect to a remote machine

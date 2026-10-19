@@ -109,3 +109,35 @@ resource "azurerm_network_interface" "mtc-nic" {               // Creates a netw
     environment = "Terraform Demo" // Identifies the environment as a Terraform demo
   }
 }
+
+
+resource "azurerm_linux_virtual_machine" "mtc-vm" {
+  name                = "mtc-vm"
+  resource_group_name = azurerm_resource_group.mtc-rg.name
+  location            = azurerm_resource_group.mtc-rg.location
+  size                = "Standard_B2s_v2"
+  zone                = "2"
+
+  admin_username = "azureuser"
+
+  network_interface_ids = [
+    azurerm_network_interface.mtc-nic.id
+  ]
+
+  admin_ssh_key {
+    username   = "azureuser"
+    public_key = file(pathexpand("~/.ssh/azurerm-ssh-key.pub"))
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts-gen2"
+    version   = "latest"
+  }
+}
